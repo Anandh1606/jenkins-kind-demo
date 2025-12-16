@@ -1,2 +1,8 @@
-FROM nginx:alpine
-COPY index.html /usr/share/nginx/html/index.html
+FROM golang:1.20-alpine AS build
+WORKDIR /app
+COPY main.go .
+RUN go build -o server main.go
+
+FROM alpine
+COPY --from=build /app/server /server
+CMD ["/server"]
